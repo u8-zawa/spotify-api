@@ -1,16 +1,29 @@
-
-# shows album info for a URN or URL
-
-from spotipy.oauth2 import SpotifyClientCredentials
-import spotipy
-import sys
+# Shows album info for a URN or URL
+import argparse
 from pprint import pprint
 
-if len(sys.argv) > 1:
-    urn = sys.argv[1]
-else:
-    urn = 'spotify:album:5yTx83u3qerZF7GRJu7eFk'
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-album = sp.album(urn)
-pprint(album)
+from settings import CLIENT_ID, CLIENT_SECRET
+
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Get single album.')
+    parser.add_argument('-a', '--aid', required=True,
+                        help='Album id')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    results = sp.album(args.aid)
+    pprint(results)
+
+
+if __name__ == '__main__':
+    main()
