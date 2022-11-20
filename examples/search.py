@@ -1,15 +1,29 @@
-# shows artist info for a URN or URL
+# Shows artist info for a URN or URL
+import argparse
+from pprint import pprint
 
-from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
-import sys
-import pprint
+from spotipy.oauth2 import SpotifyClientCredentials
 
-if len(sys.argv) > 1:
-    search_str = sys.argv[1]
-else:
-    search_str = 'Radiohead'
+from settings import CLIENT_ID, CLIENT_SECRET
 
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-result = sp.search(search_str)
-pprint.pprint(result)
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Searches for an item')
+    parser.add_argument('-q', '--query', required=True,
+                        help='Search query')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    results = sp.search(args.query)
+    pprint(results)
+
+
+if __name__ == '__main__':
+    main()
