@@ -1,13 +1,17 @@
+# Shows the top artists for a user
 import argparse
 import logging
 
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 
+from settings import CLIENT_ID, CLIENT_SECRET
+
 logger = logging.getLogger('examples.artist_albums')
 logging.basicConfig(level='INFO')
 
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                                         client_secret=CLIENT_SECRET))
 
 
 def get_args():
