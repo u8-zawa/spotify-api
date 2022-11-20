@@ -1,27 +1,39 @@
 # Shows all artists featured on an album
-
-# usage: featured_artists.py spotify:album:[album urn]
-
-from spotipy.oauth2 import SpotifyClientCredentials
-import sys
-import spotipy
+import argparse
 from pprint import pprint
 
-if len(sys.argv) > 1:
-    urn = sys.argv[1]
-else:
-    urn = 'spotify:album:5yTx83u3qerZF7GRJu7eFk'
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-album = sp.album(urn)
+from settings import CLIENT_ID, CLIENT_SECRET
 
-featured_artists = set()
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-items = album['tracks']['items']
 
-for item in items:
-    for ele in item['artists']:
-        if 'name' in ele:
-            featured_artists.add(ele['name'])
+def get_args():
+    parser = argparse.ArgumentParser(description='Get all artists featured on an album')
+    parser.add_argument('-a', '--aid', required=True,
+                        help='Album id')
+    return parser.parse_args()
 
-pprint(featured_artists)
+
+def main():
+    args = get_args()
+    album = sp.album(args.aid)
+
+    featured_artists = set()
+
+    items = album['tracks']['items']
+
+    for item in items:
+        for ele in item['artists']:
+            if 'name' in ele:
+                featured_artists.add(ele['name'])
+
+    pprint(featured_artists)
+
+
+if __name__ == '__main__':
+    main()
