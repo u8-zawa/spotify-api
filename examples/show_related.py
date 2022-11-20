@@ -1,25 +1,37 @@
+# Shows related artists for the given seed artist
+import argparse
 
-# shows related artists for the given seed artist
-
-from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
-import sys
+from spotipy.oauth2 import SpotifyClientCredentials
 
-if len(sys.argv) > 1:
-    artist_name = sys.argv[1]
-else:
-    artist_name = 'weezer'
+from settings import CLIENT_ID, CLIENT_SECRET
 
-client_credentials_manager = SpotifyClientCredentials()
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-result = sp.search(q='artist:' + artist_name, type='artist')
-try:
+
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Get related artists'
+                                                 'for the given seed artist')
+    parser.add_argument('-a', '--artist', required=True,
+                        help='Name of Artist')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    result = sp.search(q='artist:' + args.artist, type='artist')
+
     name = result['artists']['items'][0]['name']
     uri = result['artists']['items'][0]['uri']
 
     related = sp.artist_related_artists(uri)
+
     print('Related artists for', name)
     for artist in related['artists']:
         print('  ', artist['name'])
-except BaseException:
-    print("usage show_related.py [artist-name]")
+
+
+if __name__ == '__main__':
+    main()
