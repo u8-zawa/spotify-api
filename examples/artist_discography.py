@@ -1,17 +1,23 @@
-#Shows the list of all songs sung by the artist or the band
+# Shows the list of all songs sung by the artist or the band
 import argparse
 import logging
 
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 
+from settings import CLIENT_ID, CLIENT_SECRET
+
 logger = logging.getLogger('examples.artist_discography')
 logging.basicConfig(level='INFO')
+
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
 def get_args():
     parser = argparse.ArgumentParser(description='Shows albums and tracks for '
-                                     'given artist')
+                                                 'given artist')
     parser.add_argument('-a', '--artist', required=True,
                         help='Name of Artist')
     return parser.parse_args()
@@ -34,7 +40,7 @@ def show_album_tracks(album):
         results = sp.next(results)
         tracks.extend(results['items'])
     for i, track in enumerate(tracks):
-        logger.info('%s. %s', i+1, track['name'])
+        logger.info('%s. %s', i + 1, track['name'])
 
 
 def show_artist_albums(artist):
@@ -60,6 +66,7 @@ def show_artist(artist):
     if len(artist['genres']) > 0:
         logger.info('Genres: %s', ','.join(artist['genres']))
 
+
 def main():
     args = get_args()
     artist = get_artist(args.artist)
@@ -68,6 +75,4 @@ def main():
 
 
 if __name__ == '__main__':
-    client_credentials_manager = SpotifyClientCredentials()
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
     main()
