@@ -1,22 +1,36 @@
 # Removes tracks from playlist
-import pprint
-import sys
+import argparse
+import logging
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 
-if len(sys.argv) > 2:
-    playlist_id = sys.argv[2]
-    track_ids = sys.argv[3:]
-else:
-    print("Usage: %s playlist_id track_id ..." % (sys.argv[0]))
-    sys.exit()
+logger = logging.getLogger('examples.remove_tracks_from_playlist')
+logging.basicConfig(level='DEBUG')
 
 scope = 'playlist-modify-public'
+auth_manager = SpotifyOAuth(client_id=CLIENT_ID,
+                            client_secret=CLIENT_SECRET,
+                            redirect_uri=REDIRECT_URI,
+                            scope=scope)
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
-results = sp.playlist_remove_all_occurrences_of_items(
-    playlist_id, track_ids)
-pprint.pprint(results)
+def get_args():
+    parser = argparse.ArgumentParser(description='Remove track from user playlist')
+    parser.add_argument('-p', '--playlist', required=True,
+                        help='Playlist to remove track to')
+    parser.add_argument('-t', '--tids', action='append',
+                        required=True, help='Track ids')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    sp.playlist_remove_all_occurrences_of_items(args.playlist, args.tids)
+
+
+if __name__ == '__main__':
+    main()
