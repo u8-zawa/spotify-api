@@ -1,12 +1,16 @@
 # Shows the top tracks for a user
-
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-scope = 'user-top-read'
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 
+scope = 'user-top-read'
 ranges = ['short_term', 'medium_term', 'long_term']
+auth_manager = SpotifyOAuth(client_id=CLIENT_ID,
+                            client_secret=CLIENT_SECRET,
+                            redirect_uri=REDIRECT_URI,
+                            scope=scope)
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
 for sp_range in ranges:
     print("range:", sp_range)
