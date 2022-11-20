@@ -4,17 +4,19 @@ import logging
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
+from settings import CLIENT_ID, CLIENT_SECRET
 
 logger = logging.getLogger('examples.artist_recommendations')
 logging.basicConfig(level='INFO')
 
-client_credentials_manager = SpotifyClientCredentials()
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
 def get_args():
     parser = argparse.ArgumentParser(description='Recommendations for the '
-                                     'given artist')
+                                                 'given artist')
     parser.add_argument('-a', '--artist', required=True, help='Name of Artist')
     return parser.parse_args()
 
@@ -31,8 +33,7 @@ def get_artist(name):
 def show_recommendations_for_artist(artist):
     results = sp.recommendations(seed_artists=[artist['id']])
     for track in results['tracks']:
-        logger.info('Recommendation: %s - %s', track['name'],
-                    track['artists'][0]['name'])
+        logger.info('Recommendation: %s - %s', track['name'], track['artists'][0]['name'])
 
 
 def main():
