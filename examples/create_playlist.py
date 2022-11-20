@@ -1,13 +1,21 @@
 # Creates a playlist for a user
-
 import argparse
 import logging
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+
 logger = logging.getLogger('examples.create_playlist')
 logging.basicConfig(level='DEBUG')
+
+scope = "playlist-modify-public"
+auth_manager = SpotifyOAuth(client_id=CLIENT_ID,
+                            client_secret=CLIENT_SECRET,
+                            redirect_uri=REDIRECT_URI,
+                            scope=scope)
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
 
 def get_args():
@@ -21,8 +29,6 @@ def get_args():
 
 def main():
     args = get_args()
-    scope = "playlist-modify-public"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
     user_id = sp.me()['id']
     sp.user_playlist_create(user_id, args.playlist)
 
