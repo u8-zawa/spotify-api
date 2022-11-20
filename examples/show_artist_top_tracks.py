@@ -1,16 +1,30 @@
-# shows artist info for a URN or URL
+# Shows artist info for a URN or URL
+import argparse
 
-from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
-import sys
+from spotipy.oauth2 import SpotifyClientCredentials
 
-if len(sys.argv) > 1:
-    urn = sys.argv[1]
-else:
-    urn = 'spotify:artist:3jOstUTkEu2JkjvRdBA5Gu'
+from settings import CLIENT_ID, CLIENT_SECRET
 
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-response = sp.artist_top_tracks(urn)
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-for track in response['tracks']:
-    print(track['name'])
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Get Spotify catalog information'
+                                                 'about an artist’s top 10 tracks by country..')
+    parser.add_argument('-a', '--artist', required=True,
+                        help='Name of Artist')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    results = sp.artist_top_tracks(args.artist)
+    for track in results['tracks']:
+        print(track['name'])
+
+
+if __name__ == '__main__':
+    main()
