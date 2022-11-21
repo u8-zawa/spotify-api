@@ -1,16 +1,29 @@
-# shows tracks for the given artist
+# Shows tracks for the given artist
+import argparse
 
-# usage: python tracks.py [artist name]
-
-from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
-import sys
+from spotipy.oauth2 import SpotifyClientCredentials
 
-client_credentials_manager = SpotifyClientCredentials()
+from settings import CLIENT_ID, CLIENT_SECRET
+
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-if len(sys.argv) > 1:
-    artist_name = ' '.join(sys.argv[1:])
-    results = sp.search(q=artist_name, limit=20)
+
+def get_args():
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('-a', '--artist', required=True,
+                        help='Name of Artist')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    results = sp.search(q=args.artist, limit=20)
     for i, t in enumerate(results['tracks']['items']):
         print(' ', i, t['name'])
+
+
+if __name__ == '__main__':
+    main()
