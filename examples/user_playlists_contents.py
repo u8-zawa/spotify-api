@@ -1,7 +1,15 @@
 # Shows a user's playlists (need to be authenticated via oauth)
-
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+
+from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+
+scope = 'playlist-read-private'
+auth_manager = SpotifyOAuth(client_id=CLIENT_ID,
+                            client_secret=CLIENT_SECRET,
+                            redirect_uri=REDIRECT_URI,
+                            scope=scope)
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
 
 def show_tracks(results):
@@ -13,9 +21,6 @@ def show_tracks(results):
 
 
 if __name__ == '__main__':
-    scope = 'playlist-read-private'
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
-
     playlists = sp.current_user_playlists()
     user_id = sp.me()['id']
 
@@ -25,7 +30,7 @@ if __name__ == '__main__':
             print(playlist['name'])
             print('  total tracks', playlist['tracks']['total'])
 
-            results = sp.playlist(playlist['id'], fields="tracks,next")
+            results = sp.playlist(playlist['id'], fields="tracks, next")
             tracks = results['tracks']
             show_tracks(tracks)
 
