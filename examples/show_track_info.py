@@ -1,16 +1,29 @@
-# shows track info for a URN or URL
-
-from spotipy.oauth2 import SpotifyClientCredentials
-import spotipy
-import sys
+# Shows track info for a URN or URL
+import argparse
 from pprint import pprint
 
-if len(sys.argv) > 1:
-    urn = sys.argv[1]
-else:
-    urn = 'spotify:track:0Svkvt5I79wficMFgaqEQJ'
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+from settings import CLIENT_ID, CLIENT_SECRET
 
-track = sp.track(urn)
-pprint(track)
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
+                                                      client_secret=CLIENT_SECRET)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Get single track.')
+    parser.add_argument('-t', '--tid', required=True,
+                        help='Track id')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    track = sp.track(args.tid)
+    pprint(track)
+
+
+if __name__ == '__main__':
+    main()
