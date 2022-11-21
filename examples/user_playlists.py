@@ -1,19 +1,16 @@
 # Shows a user's playlists (need to be authenticated via oauth)
-
-import sys
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-if len(sys.argv) > 1:
-    username = sys.argv[1]
-else:
-    print("Whoops, need a username!")
-    print("usage: python user_playlists.py [username]")
-    sys.exit()
+from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth())
+auth_manager = SpotifyOAuth(client_id=CLIENT_ID,
+                            client_secret=CLIENT_SECRET,
+                            redirect_uri=REDIRECT_URI)
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
-playlists = sp.user_playlists(username)
+user_id = 'smedjan'
+playlists = sp.user_playlists(user_id)
 
 for playlist in playlists['items']:
     print(playlist['name'])
