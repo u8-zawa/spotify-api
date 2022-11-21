@@ -1,9 +1,13 @@
 import argparse
+import logging
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+
+logger = logging.getLogger('examples.follow_playlist')
+logging.basicConfig(level='DEBUG')
 
 scope = [
     'playlist-modify-private',
