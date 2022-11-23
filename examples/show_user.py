@@ -5,10 +5,10 @@ from pprint import pprint
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from settings import CLIENT_ID, CLIENT_SECRET
+from utils import spotify
 
-client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
-                                                      client_secret=CLIENT_SECRET)
+client_credentials_manager = SpotifyClientCredentials(client_id=spotify.CLIENT_ID,
+                                                      client_secret=spotify.CLIENT_SECRET)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 sp.trace = True
 

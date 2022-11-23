@@ -1,20 +1,21 @@
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
 import random
 
-from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+
+from utils import spotify
+
+scope = [
+    'user-top-read',
+    'user-read-recently-played'
+]
+auth_manager = SpotifyOAuth(client_id=spotify.CLIENT_ID,
+                            client_secret=spotify.CLIENT_SECRET,
+                            redirect_uri=spotify.REDIRECT_URI,
+                            scope=scope)
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
 if __name__ == '__main__':
-    scope = [
-        'user-top-read',
-        'user-read-recently-played'
-    ]
-    auth_manager = SpotifyOAuth(client_id=CLIENT_ID,
-                                client_secret=CLIENT_SECRET,
-                                redirect_uri=REDIRECT_URI,
-                                scope=scope)
-    sp = spotipy.Spotify(auth_manager=auth_manager)
-
     # よく聞く曲 (20曲)
     top_tracks = sp.current_user_top_tracks(limit=20)['items']
     top_tracks_id = [track['id'] for track in top_tracks]
@@ -28,5 +29,6 @@ if __name__ == '__main__':
 
     recommend = sp.recommendations(seed_tracks=seed_tracks)
 
-    for idx, item in enumerate(recommend['tracks']):
-        print(idx, item['artists'][0]['name'], " – ", item['name'])
+    print('Recommended music for you')
+    for i, item in enumerate(recommend['tracks']):
+        print(i, item['artists'][0]['name'], "//", item['name'])

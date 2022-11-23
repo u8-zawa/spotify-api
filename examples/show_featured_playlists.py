@@ -2,11 +2,11 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+from utils import spotify
 
-auth_manager = SpotifyOAuth(client_id=CLIENT_ID,
-                            client_secret=CLIENT_SECRET,
-                            redirect_uri=REDIRECT_URI)
+auth_manager = SpotifyOAuth(client_id=spotify.CLIENT_ID,
+                            client_secret=spotify.CLIENT_SECRET,
+                            redirect_uri=spotify.REDIRECT_URI)
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
 response = sp.featured_playlists()
